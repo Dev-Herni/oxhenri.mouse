@@ -337,6 +337,7 @@ Item {
                       spacing: Style.space(10)
 
                       Text {
+                        id: sensLabel
                         width: Style.space(120)
                         color: root.foreground
                         font.family: root.fontFamily
@@ -351,13 +352,14 @@ Item {
                         minimum: -1
                         maximum: 1
                         step: 0.05
-                        width: Math.max(Style.space(120), parent.width - Style.space(160))
+                        width: Math.max(Style.space(120), parent.width - sensLabel.width - sensValue.width - sensRow.spacing * 2)
                         anchors.verticalCenter: parent.verticalCenter
                         onMoved: function(v) { root.setSensitivity(v) }
                         onReleased: function(v) { root.setSensitivity(v); root.apply() }
                       }
 
                       Text {
+                        id: sensValue
                         width: Style.space(48)
                         horizontalAlignment: Text.AlignRight
                         color: Qt.darker(root.foreground, 1.4)
@@ -497,6 +499,7 @@ Item {
                       spacing: Style.space(10)
 
                       Text {
+                        id: scrollLabel
                         width: Style.space(120)
                         color: root.foreground
                         font.family: root.fontFamily
@@ -510,13 +513,14 @@ Item {
                         minimum: 0.1
                         maximum: 2
                         step: 0.1
-                        width: Math.max(Style.space(120), parent.width - Style.space(160))
+                        width: Math.max(Style.space(120), parent.width - scrollLabel.width - scrollValue.width - scrollRow.spacing * 2)
                         anchors.verticalCenter: parent.verticalCenter
                         onMoved: function(v) { root.setScrollFactor(v) }
                         onReleased: function(v) { root.setScrollFactor(v); root.apply() }
                       }
 
                       Text {
+                        id: scrollValue
                         width: Style.space(48)
                         horizontalAlignment: Text.AlignRight
                         color: Qt.darker(root.foreground, 1.4)
@@ -682,13 +686,13 @@ Item {
                   onHasCursorChanged: if (hasCursor) scrollArea.ScrollBar.vertical.position = 1
                   onClicked: root.resetToDefaults()
                 }
-                }
               }
             }
           }
         }
       }
     }
+  }
 
   // Fake `bar` for components that take a whole bar object (PanelSlider).
   readonly property var fakeBar: QtObject {

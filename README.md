@@ -2,46 +2,50 @@
 
 Mouse and pointer settings panel for [Omarchy](https://github.com/basecamp/omarchy) (Quickshell).
 
-- Pointer sensitivity and acceleration profile (`flat` / `adaptive` / custom)
+- Pointer sensitivity and acceleration profile (`flat` / `adaptive`)
 - Touchpad natural scroll and scroll factor
 - Cursor theme (hyprcursor and legacy XCursor themes) and cursor size
 
 Changes apply immediately via `hyprctl` and persist through an Omarchy
 hyprland-toggles lua file (`~/.local/state/omarchy/toggles/hypr/oxhenri-mouse.lua`)
 so they survive reloads, in the same way `omarchy-hyprland-toggle` persists state.
+Your existing Hyprland config files are never modified.
 
 ## Install
 
 ```sh
-git clone https://github.com/Dev-Herni/oxhenri.mouse.git \
-  ~/.config/omarchy/plugins/oxhenri.mouse
+omarchy plugin add https://github.com/Dev-Herni/oxhenri.mouse.git --enable
 ```
 
-Open the panel with:
+## Usage
+
+Open the panel from the Omarchy plugin drawer, or summon it directly:
 
 ```sh
 omarchy-shell shell summon oxhenri.mouse '{}'
 ```
 
-or launch it from the Omarchy plugin drawer.
+Keyboard: j/k to move between sections, h/l to adjust values,
+Enter to activate, Esc to close. Mouse input works everywhere too.
 
 ## Files
 
+- `manifest.json` — plugin contract
 - `MousePanel.qml` — settings UI
 - `mouse-ctl.sh` — read (`get`) / apply + persist (`apply`) helper
 
 ## Requirements
 
-Everything used here ships with Omarchy: `hyprctl`, `jq`, `gsettings`, and a
-POSIX shell. No extra packages.
+Everything used here ships with Omarchy: `hyprctl`, `gsettings`, and bash.
+No extra packages.
 
-Settings are only written when you press apply in the panel, and they go to
+Settings are written when you change a value in the panel, and they go to
 Omarchy's own toggles state dir — your existing Hyprland config files are
 never modified.
 
-## Removal
+## Remove
 
-```bash
+```sh
 omarchy plugin remove oxhenri.mouse --yes
 ```
 
