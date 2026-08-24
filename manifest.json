@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "oxhenri.mouse",
+  "name": "Mouse",
+  "version": "1.0.0",
+  "author": "oxhenri",
+  "description": "Mouse and pointer settings: sensitivity, acceleration profile, touchpad natural scroll and scroll factor, and cursor theme and size. Summon with: omarchy-shell shell summon oxhenri.mouse '{}'",
+  "kinds": [
+    "panel"
+  ],
+  "entryPoints": {
+    "panel": "MousePanel.qml"
+  }
+}
