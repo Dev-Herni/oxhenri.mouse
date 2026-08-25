@@ -2,12 +2,15 @@
 
 Mouse and pointer settings panel for [Omarchy](https://github.com/basecamp/omarchy) (Quickshell).
 
-![Mouse & Pointer settings panel](preview.png)
+Two Walker locations, one plugin:
 
-Two Walker locations, one panel:
+**Setup → Mouse** — pointer sensitivity, acceleration, touchpad natural scroll and scroll factor
 
-- **Setup → Mouse** — pointer sensitivity, acceleration, touchpad natural scroll and scroll factor
-- **Style → Cursor** — cursor theme (hyprcursor and legacy XCursor themes) and cursor size
+![Setup → Mouse](preview.png)
+
+**Style → Cursor** — cursor theme (hyprcursor and legacy XCursor themes) and cursor size
+
+![Style → Cursor](screenshots/cursor.png)
 
 Changes apply immediately via `hyprctl` and persist through an Omarchy
 hyprland-toggles lua file (`~/.local/state/omarchy/toggles/hypr/oxhenri-mouse.lua`)
@@ -50,6 +53,8 @@ Enter to activate, Esc to close. Mouse input works everywhere too.
 - `MousePanel.qml` — settings UI (input and cursor views)
 - `mouse-ctl.sh` — read (`get`) / apply-input / apply-cursor + persist helper
 - `extras/omarchy-menu.jsonc` — Walker entries under Setup → Mouse and Style → Cursor
+- `preview.png` — Setup → Mouse
+- `screenshots/cursor.png` — Style → Cursor
 
 ## Requirements
 
