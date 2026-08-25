@@ -4,9 +4,7 @@ Mouse and pointer settings panel for [Omarchy](https://github.com/basecamp/omarc
 
 ![Mouse & Pointer settings panel](preview.png)
 
-Open it from **Style → Mouse**:
-
-![Style menu with Mouse selected](screenshots/style-menu.png)
+Open it from **Setup → Mouse**.
 
 - Pointer sensitivity and acceleration profile (`flat` / `adaptive`)
 - Touchpad natural scroll and scroll factor
@@ -22,6 +20,15 @@ Your existing Hyprland config files are never modified.
 ```sh
 omarchy plugin add https://github.com/Dev-Herni/oxhenri.mouse.git --enable
 ```
+
+Add this line to `~/.config/omarchy/extensions/omarchy-menu.jsonc` so Walker
+shows it under **Setup**:
+
+```jsonc
+"setup.mouse": {"icon":"󰟸","label":"Mouse","action":"omarchy-shell shell summon oxhenri.mouse '{}'"}
+```
+
+A ready-to-merge snippet lives in [`extras/omarchy-menu.jsonc`](extras/omarchy-menu.jsonc).
 
 ## Usage
 
@@ -39,6 +46,7 @@ Enter to activate, Esc to close. Mouse input works everywhere too.
 - `manifest.json` — plugin contract
 - `MousePanel.qml` — settings UI
 - `mouse-ctl.sh` — read (`get`) / apply + persist (`apply`) helper
+- `extras/omarchy-menu.jsonc` — Walker entry under Setup → Mouse
 
 ## Requirements
 
@@ -54,6 +62,9 @@ never modified.
 ```sh
 omarchy plugin remove oxhenri.mouse --yes
 ```
+
+Also delete the `"setup.mouse"` line from
+`~/.config/omarchy/extensions/omarchy-menu.jsonc` if you added it.
 
 Persisted settings live in
 `~/.local/state/omarchy/toggles/hypr/oxhenri-mouse.lua`; delete that file to
