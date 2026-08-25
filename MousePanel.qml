@@ -7,11 +7,13 @@ import qs.Ui
 import qs.Commons
 
 // Mouse & pointer settings panel for the oxhenri.mouse plugin.
-// Summon with: omarchy-shell shell summon oxhenri.mouse '{}'
+// Summon with view payload (missing/empty view = input):
+//   omarchy-shell shell summon oxhenri.mouse '{"view":"input"}'
+//   omarchy-shell shell summon oxhenri.mouse '{"view":"cursor"}'
 //
 // Reads current values from Hyprland (via mouse-ctl.sh get) on open, applies
-// changes through mouse-ctl.sh apply (hyprctl eval + setcursor + persist to
-// the omarchy toggles dir so they survive reloads).
+// changes through mouse-ctl.sh apply-input / apply-cursor (hyprctl eval +
+// setcursor + persist to the omarchy toggles dir so they survive reloads).
 Item {
   id: root
 
@@ -19,11 +21,17 @@ Item {
   property bool opened: false
   property var shell: null
   property var manifest: null
+  property string view: "input"
 
   readonly property string sourceDir: manifest && manifest.__sourceDir ? manifest.__sourceDir : ""
   readonly property string ctlScript: sourceDir + "/mouse-ctl.sh"
 
   function open(payloadJson) {
+    var payload = ({})
+    try { payload = JSON.parse(payloadJson || "{}") } catch (e) { payload = ({}) }
+    view = payload.view === "cursor" ? "cursor" : "input"
+    focusSection = view === "cursor" ? "theme" : "sensitivity"
+
     opened = true
     window.visible = true
     Qt.callLater(function() {
@@ -66,7 +74,9 @@ Item {
   property int selectedIndex: 0
   property bool cursorActive: false
 
-  readonly property var sections: ["sensitivity", "accel", "natural", "scroll", "theme", "size", "reset"]
+  readonly property var sections: view === "cursor"
+    ? ["theme", "size", "reset"]
+    : ["sensitivity", "accel", "natural", "scroll", "reset"]
 
   function sectionIndex(section) {
     return sections.indexOf(section)
@@ -150,11 +160,15 @@ Item {
 
   function apply() {
     if (!ctlScript) return
-    applyProc.command = [
-      "bash", ctlScript, "apply",
-      String(sensitivity), accel, naturalScroll ? "true" : "false",
-      String(scrollFactor), theme || "default", size
-    ]
+    if (view === "cursor") {
+      applyProc.command = ["bash", ctlScript, "apply-cursor", theme || "default", size]
+    } else {
+      applyProc.command = [
+        "bash", ctlScript, "apply-input",
+        String(sensitivity), accel, naturalScroll ? "true" : "false",
+        String(scrollFactor)
+      ]
+    }
     applyProc.running = true
   }
 
@@ -242,7 +256,7 @@ Item {
         PanelKeyCatcher {
           id: keyCatcher
           anchors.fill: parent
-          blocked: themeDropdown.popupOpen
+          blocked: root.view === "cursor" && themeDropdown && themeDropdown.popupOpen
           onMoveRequested: function(dx, dy) {
             if (dy !== 0) root.moveCursor(dy)
             else if (dx !== 0) root.moveCursorH(dx)
@@ -268,14 +282,16 @@ Item {
                 spacing: Style.space(4)
 
                 Text {
-                  text: "Mouse & Pointer"
+                  text: root.view === "cursor" ? "Cursor" : "Mouse"
                   color: root.foreground
                   font.family: root.fontFamily
                   font.pixelSize: Style.font.title
                   font.bold: true
                 }
                 Text {
-                  text: "Pointer sensitivity, acceleration, touchpad scroll, and cursor appearance. j/k to walk, h/l to adjust, Enter to activate, Esc to close."
+                  text: root.view === "cursor"
+                    ? "Cursor theme and size. j/k to walk, h/l to adjust, Enter to activate, Esc to close."
+                    : "Pointer sensitivity, acceleration, and touchpad scroll. j/k to walk, h/l to adjust, Enter to activate, Esc to close."
                   color: Qt.darker(root.foreground, 1.4)
                   font.family: root.fontFamily
                   font.pixelSize: Style.font.bodySmall
@@ -287,10 +303,11 @@ Item {
               PanelSeparator { foreground: root.foreground }
 
               // ---- Pointer ---------------------------------------------------
-              PanelSectionHeader { text: "Pointer"; foreground: root.foreground; fontFamily: root.fontFamily }
+              PanelSectionHeader { text: "Pointer"; foreground: root.foreground; fontFamily: root.fontFamily; visible: root.view === "input" }
 
               BorderSurface {
                 width: parent.width
+                visible: root.view === "input"
                 implicitHeight: pointerCol.implicitHeight + Style.spacing.rowPaddingX * 2
                 color: Qt.rgba(root.foreground.r, root.foreground.g, root.foreground.b, 0.04)
                 radius: Style.cornerRadius
@@ -429,13 +446,14 @@ Item {
                 }
               }
 
-              PanelSeparator { foreground: root.foreground }
+              PanelSeparator { foreground: root.foreground; visible: root.view === "input" }
 
               // ---- Touchpad --------------------------------------------------
-              PanelSectionHeader { text: "Touchpad"; foreground: root.foreground; fontFamily: root.fontFamily }
+              PanelSectionHeader { text: "Touchpad"; foreground: root.foreground; fontFamily: root.fontFamily; visible: root.view === "input" }
 
               BorderSurface {
                 width: parent.width
+                visible: root.view === "input"
                 implicitHeight: touchCol.implicitHeight + Style.spacing.rowPaddingX * 2
                 color: Qt.rgba(root.foreground.r, root.foreground.g, root.foreground.b, 0.04)
                 radius: Style.cornerRadius
@@ -533,13 +551,12 @@ Item {
                 }
               }
 
-              PanelSeparator { foreground: root.foreground }
-
               // ---- Cursor ----------------------------------------------------
-              PanelSectionHeader { text: "Cursor"; foreground: root.foreground; fontFamily: root.fontFamily }
+              PanelSectionHeader { text: "Cursor"; foreground: root.foreground; fontFamily: root.fontFamily; visible: root.view === "cursor" }
 
               BorderSurface {
                 width: parent.width
+                visible: root.view === "cursor"
                 implicitHeight: cursorCol.implicitHeight + Style.spacing.rowPaddingX * 2
                 color: Qt.rgba(root.foreground.r, root.foreground.g, root.foreground.b, 0.04)
                 radius: Style.cornerRadius
@@ -674,7 +691,9 @@ Item {
                   id: resetButton
                   text: "Reset to defaults"
                   iconText: "󰄭"
-                  tooltipText: "Restore Omarchy default pointer settings"
+                  tooltipText: root.view === "cursor"
+                    ? "Restore Omarchy default cursor settings"
+                    : "Restore Omarchy default pointer settings"
                   hasCursor: root.cursorActive && root.focusSection === "reset"
                   onHovered: function(h) {
                     if (h) {
@@ -708,13 +727,15 @@ Item {
   function resetToDefaults() {
     root.focusSection = "reset"
     root.cursorActive = true
-    // Omarchy default pointer settings.
-    root.sensitivity = -0.25
-    root.accel = "flat"
-    root.naturalScroll = false
-    root.scrollFactor = 0.4
-    root.theme = "default"
-    root.size = "24"
+    if (root.view === "cursor") {
+      root.theme = "default"
+      root.size = "24"
+    } else {
+      root.sensitivity = -0.25
+      root.accel = "flat"
+      root.naturalScroll = false
+      root.scrollFactor = 0.4
+    }
     root.apply()
   }
 }

@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "id": "oxhenri.mouse",
   "name": "Mouse",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "oxhenri",
   "license": "MIT",
-  "description": "Mouse and pointer settings panel: sensitivity, acceleration, touchpad natural scroll and scroll factor, cursor theme and size.",
+  "description": "Pointer input (Setup → Mouse: sensitivity, acceleration, touchpad scroll) and cursor appearance (Style → Cursor: theme and size).",
   "kinds": [
     "panel"
   ],

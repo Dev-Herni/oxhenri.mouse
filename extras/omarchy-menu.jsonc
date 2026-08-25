@@ -1,5 +1,6 @@
 {
-  // Adds Setup -> Mouse to the Omarchy menu (Walker).
+  // Adds Setup -> Mouse and Style -> Cursor to the Omarchy menu (Walker).
   // Merge into ~/.config/omarchy/extensions/omarchy-menu.jsonc.
-  "setup.mouse": {"icon":"󰟸","label":"Mouse","action":"omarchy-shell shell summon oxhenri.mouse '{}'"}
+  "setup.mouse": {"icon":"󰟸","label":"Mouse","action":"omarchy-shell shell summon oxhenri.mouse '{\"view\":\"input\"}'"},
+  "style.cursor": {"icon":"󰇀","label":"Cursor","action":"omarchy-shell shell summon oxhenri.mouse '{\"view\":\"cursor\"}'"}
 }

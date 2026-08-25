@@ -4,11 +4,10 @@ Mouse and pointer settings panel for [Omarchy](https://github.com/basecamp/omarc
 
 ![Mouse & Pointer settings panel](preview.png)
 
-Open it from **Setup → Mouse**.
+Two Walker locations, one panel:
 
-- Pointer sensitivity and acceleration profile (`flat` / `adaptive`)
-- Touchpad natural scroll and scroll factor
-- Cursor theme (hyprcursor and legacy XCursor themes) and cursor size
+- **Setup → Mouse** — pointer sensitivity, acceleration, touchpad natural scroll and scroll factor
+- **Style → Cursor** — cursor theme (hyprcursor and legacy XCursor themes) and cursor size
 
 Changes apply immediately via `hyprctl` and persist through an Omarchy
 hyprland-toggles lua file (`~/.local/state/omarchy/toggles/hypr/oxhenri-mouse.lua`)
@@ -21,22 +20,26 @@ Your existing Hyprland config files are never modified.
 omarchy plugin add https://github.com/Dev-Herni/oxhenri.mouse.git --enable
 ```
 
-Add this line to `~/.config/omarchy/extensions/omarchy-menu.jsonc` so Walker
-shows it under **Setup**:
+Add these lines to `~/.config/omarchy/extensions/omarchy-menu.jsonc` so Walker
+shows **Setup → Mouse** and **Style → Cursor**:
 
 ```jsonc
-"setup.mouse": {"icon":"󰟸","label":"Mouse","action":"omarchy-shell shell summon oxhenri.mouse '{}'"}
+"setup.mouse": {"icon":"󰟸","label":"Mouse","action":"omarchy-shell shell summon oxhenri.mouse '{\"view\":\"input\"}'"},
+"style.cursor": {"icon":"󰇀","label":"Cursor","action":"omarchy-shell shell summon oxhenri.mouse '{\"view\":\"cursor\"}'"}
 ```
 
 A ready-to-merge snippet lives in [`extras/omarchy-menu.jsonc`](extras/omarchy-menu.jsonc).
 
 ## Usage
 
-Open the panel from the Omarchy plugin drawer, or summon it directly:
+Open the panel from Walker, or summon it directly:
 
 ```sh
-omarchy-shell shell summon oxhenri.mouse '{}'
+omarchy-shell shell summon oxhenri.mouse '{"view":"input"}'
+omarchy-shell shell summon oxhenri.mouse '{"view":"cursor"}'
 ```
+
+Empty payload / missing `view` opens the input view (backward compatible).
 
 Keyboard: j/k to move between sections, h/l to adjust values,
 Enter to activate, Esc to close. Mouse input works everywhere too.
@@ -44,9 +47,9 @@ Enter to activate, Esc to close. Mouse input works everywhere too.
 ## Files
 
 - `manifest.json` — plugin contract
-- `MousePanel.qml` — settings UI
-- `mouse-ctl.sh` — read (`get`) / apply + persist (`apply`) helper
-- `extras/omarchy-menu.jsonc` — Walker entry under Setup → Mouse
+- `MousePanel.qml` — settings UI (input and cursor views)
+- `mouse-ctl.sh` — read (`get`) / apply-input / apply-cursor + persist helper
+- `extras/omarchy-menu.jsonc` — Walker entries under Setup → Mouse and Style → Cursor
 
 ## Requirements
 
@@ -63,8 +66,8 @@ never modified.
 omarchy plugin remove oxhenri.mouse --yes
 ```
 
-Also delete the `"setup.mouse"` line from
-`~/.config/omarchy/extensions/omarchy-menu.jsonc` if you added it.
+Also delete the `"setup.mouse"` and `"style.cursor"` lines from
+`~/.config/omarchy/extensions/omarchy-menu.jsonc` if you added them.
 
 Persisted settings live in
 `~/.local/state/omarchy/toggles/hypr/oxhenri-mouse.lua`; delete that file to
