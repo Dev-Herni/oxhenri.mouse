@@ -2,6 +2,12 @@
 
 Mouse and pointer settings panel for [Omarchy](https://github.com/basecamp/omarchy) (Quickshell).
 
+![Mouse & Pointer settings panel](preview.png)
+
+Open it from **Style → Mouse**:
+
+![Style menu with Mouse selected](screenshots/style-menu.png)
+
 - Pointer sensitivity and acceleration profile (`flat` / `adaptive`)
 - Touchpad natural scroll and scroll factor
 - Cursor theme (hyprcursor and legacy XCursor themes) and cursor size
